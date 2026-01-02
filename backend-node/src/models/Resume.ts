@@ -5,6 +5,10 @@ const resumeSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    fileName: { // 
+        type: String,
+        required: true,
+    },
     fileUrl: {
         type: String, // Path to file (local or S3)
         required: true,
