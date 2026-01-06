@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js'
 import path from 'path'
 import { fileURLToPath } from 'url';
 import resumeRoutes from './routes/resumeRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 dotenv.config()
 
 connectDB()
@@ -21,6 +22,7 @@ app.get('/',(req,res)=> {
 
 app.use('/api/auth' , authRoutes)
 app.use('/api/resumes' , resumeRoutes)
+app.use('/api/jobs' ,jobRoutes)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
