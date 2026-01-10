@@ -15,6 +15,9 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
         const formData = new FormData();
         formData.append('file' , fs.createReadStream(req.file.path))
 
+        const jd = req.body.jobDescription || req.body.job_description || "General Software Engineer";
+        formData.append('job_description', jd); 
+
         let analysisData = { ats_score: 0, feedback: [], extracted_text_length: 0 };
 
         try{

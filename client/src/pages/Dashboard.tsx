@@ -24,7 +24,7 @@ const Dashboard = () => {
         const {data} = await API.post('/jobs/search' , criteria)
         setJobs(data)
 
-        const aggregatedText = data.slice(0,5).map((j:any) => j.job_description).join(' ')
+        const aggregatedText = data.map((j:any) => j.job_description).join(' ')
         setMarketBenchmark(aggregatedText)
         setStep(2)
       }catch(error){
