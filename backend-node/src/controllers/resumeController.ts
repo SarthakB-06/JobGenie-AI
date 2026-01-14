@@ -6,6 +6,9 @@ import FormData from 'form-data';
 import type { AuthRequest } from '../middlewares/authMiddleware.js';
 import Resume from '../models/Resume.js';
 
+
+
+
 export const uploadResume = async (req:AuthRequest , res:Response): Promise<void> => {
     try{
         if(!req.file){
@@ -18,7 +21,7 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
         const jd = req.body.jobDescription || req.body.job_description || "General Software Engineer";
         formData.append('job_description', jd); 
 
-        let analysisData = { ats_score: 0, feedback: [], extracted_text_length: 0 };
+        let analysisData:any  = { ats_score: 0, feedback: [], extracted_text_length: 0 };
 
         try{
             const pythonRes = await axios.post('http://127.0.0.1:8000/analyze' , formData, {
@@ -38,11 +41,33 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
             fileName : req.file.originalname,
             fileUrl : req.file.path,
             atsScore: analysisData.ats_score,
-            analysisResults:analysisData,
+            targetJobContext: jd,
+            extractedSkills: analysisData.extracted_skills || [],
+            missingSkills: analysisData.missing_skills || [],
+            aiFeedback: {
+                summary: analysisData.summary || "Analysis pending...",
+                strengths: [], 
+                weaknesses: analysisData.feedback || [],
+                suggestion: (analysisData.feedback && analysisData.feedback.length > 0) 
+                            ? analysisData.feedback[analysisData.feedback.length - 1] 
+                            : ""
+            },
             isParsed:true
         })
         res.status(201).json(resume);
     }catch(error){
         res.status(500).json({message: (error as Error).message});
+    }
+}
+
+
+export const getResumeHistory = async (req:AuthRequest, res:Response) : Promise<void> =>{
+    try{
+        const history = await Resume.find({user: req.user._id})
+        .sort({uploadDate: -1})
+        .limit(10)
+        res.json(history);
+    }catch(error){
+        res.status(500).json({message:'Error fetching history'})
     }
 }
