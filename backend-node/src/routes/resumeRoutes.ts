@@ -1,7 +1,7 @@
 import express, { type RequestHandler } from 'express';
 import multer from 'multer';
 import path from 'path';
-import { uploadResume } from '../controllers/resumeController.js';
+import { uploadResume, getResumeHistory} from '../controllers/resumeController.js';
 import  { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -38,5 +38,7 @@ router.post(
   upload.single('resume'), 
   uploadResume as RequestHandler
 );
+
+router.get('/history', protect as RequestHandler, getResumeHistory as RequestHandler);
 
 export default router;

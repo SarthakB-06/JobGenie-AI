@@ -42,7 +42,7 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
             fileUrl : req.file.path,
             atsScore: analysisData.ats_score,
             targetJobContext: jd,
-            extractedSkills: analysisData.extracted_skills || [],
+            extractedSkills: analysisData.key_skills || [],
             missingSkills: analysisData.missing_skills || [],
             aiFeedback: {
                 summary: analysisData.summary || "Analysis pending...",
@@ -54,7 +54,20 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
             },
             isParsed:true
         })
-        res.status(201).json(resume);
+        res.status(201).json({
+            _id: resume._id,
+            
+            
+            ats_score: resume.atsScore,
+            
+            key_skills: resume.extractedSkills,     
+            missing_skills: resume.missingSkills,
+            
+            summary: resume.aiFeedback?.summary,
+            feedback: resume.aiFeedback?.weaknesses,
+            
+            market_benchmark_summary: analysisData.market_benchmark_summary 
+    })
     }catch(error){
         res.status(500).json({message: (error as Error).message});
     }

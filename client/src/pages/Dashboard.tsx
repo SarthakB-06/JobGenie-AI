@@ -4,6 +4,7 @@ import UploadZone from '../components/resume/UploadZone.js';
 import JobPreferencesForm from '../components/dashboard/JobPreferenceForm.js';
 import API from '../services/api.js';
 import { CheckCircle, AlertCircle, Briefcase, MapPin, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -11,6 +12,7 @@ const Dashboard = () => {
     
     const [step, setStep] = useState(1);
     const [loadingJobs, setLoadingJobs] = useState(false);
+    const navigate = useNavigate();
 
     // data
     const [jobs , setJobs] = useState<any[]>([]);
@@ -40,7 +42,11 @@ const Dashboard = () => {
       setResumeData(data);
       setStep(3)
     }
-
+  
+    const handleLogout = () => {
+      logout();
+      navigate('/login');
+    }
     return (
         <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
@@ -50,7 +56,7 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             <span className="text-gray-700">Welcome, {user?.name}</span>
             <button 
-              onClick={logout}
+              onClick={handleLogout}
               className="text-sm text-red-600 hover:text-red-800 font-medium"
             >
               Logout
@@ -135,8 +141,8 @@ const Dashboard = () => {
               
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className={`text-5xl font-extrabold ${resumeData.atsScore >= 70 ? 'text-green-600' : 'text-orange-500'}`}>
-                    {resumeData.atsScore}
+                  <div className={`text-5xl font-extrabold ${resumeData.ats_score >= 70 ? 'text-green-600' : 'text-orange-500'}`}>
+                    {resumeData.ats_score}
                   </div>
                   <div className="text-xs text-gray-400 uppercase tracking-widest font-semibold mt-1">/ 100 Score</div>
                 </div>
@@ -151,14 +157,14 @@ const Dashboard = () => {
                   Improvements Needed
                 </h3>
                 <ul className="space-y-3">
-                  {resumeData.analysisResults?.feedback?.map((item: string, index: number) => (
+                  {resumeData.feedback?.map((item: string, index: number) => (
                     <li key={index} className="flex items-start gap-3 text-gray-700 bg-red-50 p-3 rounded-lg border border-red-100">
                       <span className="mt-1.5 block w-2 h-2 rounded-full bg-red-400 shrink-0" />
                       {item}
                     </li>
                   ))}
                   {/* Show missing skills if available */}
-                  {resumeData.analysisResults?.missing_skills?.map((skill: string, index: number) => (
+                  {resumeData.missing_skills?.map((skill: string, index: number) => (
                      <li key={`miss-${index}`} className="flex items-start gap-3 text-gray-700 bg-orange-50 p-3 rounded-lg border border-orange-100">
                      <span className="mt-1.5 block w-2 h-2 rounded-full bg-orange-400 shrink-0" />
                      Missing Skill: <strong>{skill}</strong>
@@ -173,12 +179,12 @@ const Dashboard = () => {
                   Positive Signals
                 </h3>
                 <div className="space-y-4">
-                  <p className="text-gray-600 italic">"{resumeData.analysisResults?.summary}"</p>
+                  <p className="text-gray-600 italic">"{resumeData.summary}"</p>
                   
                   <div className="mt-4">
                     <h4 className="text-sm font-semibold text-gray-500 uppercase mb-2">Detected Skills</h4>
                     <div className="flex flex-wrap gap-2">
-                      {resumeData.analysisResults?.key_skills?.map((skill: string, index: number) => (
+                      {resumeData.key_skills?.map((skill: string, index: number) => (
                         <span key={index} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                           {skill}
                         </span>
