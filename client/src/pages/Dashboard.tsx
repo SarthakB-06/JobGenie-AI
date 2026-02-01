@@ -5,6 +5,7 @@ import JobPreferencesForm from '../components/dashboard/JobPreferenceForm.js';
 import API from '../services/api.js';
 import { CheckCircle, AlertCircle, Briefcase, MapPin, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Navbar } from '../components/common/Navbar.js';
 
 
 const Dashboard = () => {
@@ -50,20 +51,8 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-blue-600">JobGenie AI</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-700">Welcome, {user?.name}</span>
-            <button 
-              onClick={handleLogout}
-              className="text-sm text-red-600 hover:text-red-800 font-medium"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar  />
+          
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
