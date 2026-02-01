@@ -6,7 +6,7 @@ import API from '../services/api.js';
 import { CheckCircle, AlertCircle, Briefcase, MapPin, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/common/Navbar.js';
-
+import { JobMarket } from '../components/dashboard/JobMarket.js';
 
 const Dashboard = () => {
     const {user, logout} = useAuth();
@@ -19,7 +19,7 @@ const Dashboard = () => {
     const [jobs , setJobs] = useState<any[]>([]);
     const [resumeData, setResumeData] = useState<any>(null);
     const [marketBenchmark, setMarketBenchmark] = useState('');
-
+    const [showJobs, setShowJobs] = useState(false);
 
     const handleJobSearch = async(criteria:any) => {
       setLoadingJobs(true);
@@ -47,6 +47,18 @@ const Dashboard = () => {
     const handleLogout = () => {
       logout();
       navigate('/login');
+    }
+
+    const handleApply  = (job:any) => {
+      // window.open(job.url, '_blank');
+      const url = job.job_apply_link || job.job_google_link || job.url;
+      if(url){
+        window.open(url, '_blank');
+        console.log("Applied to:", job.employer_name);
+      }else{
+        alert('No application link available for this job.');
+      }
+
     }
     return (
         <div className="min-h-screen bg-gray-50">
@@ -184,13 +196,24 @@ const Dashboard = () => {
               </div>
             </div>
 
-             {resumeData.atsScore >= 75 ? (
-               <div className="text-center py-10">
-                 <h3 className="text-2xl font-bold text-gray-900 mb-4">🎉 You matched the Market Standard!</h3>
-                 <p className="text-gray-600 mb-6">The job listings are now unlocked for express application.</p>
-                 <button className="px-8 py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 hover:scale-105 transition-all">
-                   View & Apply to {jobs.length} Jobs
-                 </button>
+             {resumeData.ats_score >= 0 ? (  // CHANGED Condition to 0 for debugging, move back to 75 later
+               <div className="mt-8">
+                 {!showJobs ? (
+                    <div className="text-center py-10 bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">🎉 You are Match Ready!</h3>
+                        <p className="text-gray-600 mb-6">
+                            We found <strong>{jobs.length}</strong> jobs matching your optimized profile.
+                        </p>
+                        <button 
+                            onClick={() => setShowJobs(true)}
+                            className="px-8 py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 hover:scale-105 transition-all"
+                        >
+                        View & Apply to Jobs
+                        </button>
+                    </div>
+                 ) : (
+                    <JobMarket jobs={jobs} onApply={handleApply} />
+                 )}
                </div>
             ) : (
               <div className="text-center py-10 opacity-75">
