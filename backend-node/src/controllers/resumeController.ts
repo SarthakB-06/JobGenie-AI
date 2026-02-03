@@ -22,9 +22,9 @@ export const uploadResume = async (req:AuthRequest , res:Response): Promise<void
         formData.append('job_description', jd); 
 
         let analysisData:any  = { ats_score: 0, feedback: [], extracted_text_length: 0 };
-
+        const pythonUrl = process.env.PYTHON_SERVICE_URL
         try{
-            const pythonRes = await axios.post('http://127.0.0.1:8000/analyze' , formData, {
+            const pythonRes = await axios.post(`${pythonUrl}/analyze` , formData, {
                 headers:{
                     ...formData.getHeaders()
                 }
