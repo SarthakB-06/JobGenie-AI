@@ -6,16 +6,29 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    print("Downloading Spacy model...")
-    from spacy.cli import download
-    download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+_nlp_instance = None
+_st_model_instance = None
+
+def get_nlp():
+    global _nlp_instance
+    if _nlp_instance is None:
+        print("⏳ Loading Spacy model...")
+        try:
+            _nlp_instance = spacy.load("en_core_web_sm")
+        except OSError:
+            print("Downloading Spacy model...")
+            from spacy.cli import download
+            download("en_core_web_sm")
+            _nlp_instance = spacy.load("en_core_web_sm")
+    return _nlp_instance
 
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+def get_st_model():
+    global _st_model_instance
+    if _st_model_instance is None:
+        print("⏳ Loading SentenceTransformer model...")
+        _st_model_instance = SentenceTransformer('all-MiniLM-L6-v2')
+    return _st_model_instance
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKILLS_DB_PATH= os.path.join(BASE_DIR, 'data' , 'skills_db.json')
@@ -35,8 +48,7 @@ else:
 
 class ATSScorer:
     def __init__(self):
-        self.nlp = nlp
-        self.model = model
+       
         self.all_skills = ALL_SKILLS
 
     def extract_skills(self, text: str) -> list[str]:
@@ -51,7 +63,9 @@ class ATSScorer:
         Deterministic Rule-Based Extraction using Spacy & String Matching.
         It checks tokens and noun chunks against our Skills Database.
         """
-        doc = self.nlp(text.lower())
+
+        nlp = get_nlp()
+        doc = nlp(text.lower())
         found_skills = set()
 
         for token in doc:
@@ -69,8 +83,9 @@ class ATSScorer:
         Compare Resume vs The RAG-Generated Golden Standard
         """
         # We use a dedicated SBERT model for similarity as it's better than Gemini's generic embeddings for this specific math
-        resume_vec = self.model.encode([resume_text])
-        standard_vec = self.model.encode([golden_standard_text])
+        model = get_st_model()
+        resume_vec = model.encode([resume_text])
+        standard_vec = model.encode([golden_standard_text])
         
         similarity = cosine_similarity(resume_vec, standard_vec)[0][0]
         return round(similarity * 100, 2)

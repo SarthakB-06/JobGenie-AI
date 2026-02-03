@@ -6,12 +6,20 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 from langchain_core.prompts import PromptTemplate
 
+_hf_embeddings_instance = None
+
+def get_embeddings():
+    global _hf_embeddings_instance
+    if _hf_embeddings_instance is None:
+        print("⏳ Loading HuggingFace Embeddings...")
+        _hf_embeddings_instance = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    return _hf_embeddings_instance
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 class MarketAnalyzer:
     def __init__(self):
-        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         self.llm = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash", api_key=GOOGLE_API_KEY,temperature=0.3)
 
     def generate_golden_standard(self, job_descriptions: list[str]) -> str:
@@ -22,12 +30,12 @@ class MarketAnalyzer:
             if not job_descriptions:
                 return "General Software Engineer with Standard skills."
             
-
+            embeddings = get_embeddings()
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
             docs = text_splitter.create_documents(job_descriptions)
 
 
-            vectorstore = Chroma.from_documents(documents=docs, embedding=self.embeddings)
+            vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings)
 
             retriever = vectorstore.as_retriever(search_kwargs={"k" : 5})
 
