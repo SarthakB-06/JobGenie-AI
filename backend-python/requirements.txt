@@ -10,5 +10,5 @@ langchain-community
 sentence-transformers
 scikit-learn
 google-generativeai
-
+langchain-google-genai
 numpy
