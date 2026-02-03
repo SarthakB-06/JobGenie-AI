@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api.js';
 import { useAuth } from '../context/AuthContext.js';
+import { Brain, AlertCircle, Eye, EyeOff, ArrowRight, FileText, Target, TrendingUp, Users } from 'lucide-react';
 
 const Login = () => {
-  // State to toggle between Login and Register views
   const [isRegister, setIsRegister] = useState(false);
-
-  // Form fields
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // UI states
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -25,23 +22,12 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // 1. Determine which endpoint to call
       const endpoint = isRegister ? '/auth/register' : '/auth/login';
-      const payload = isRegister
-        ? { name, email, password }
-        : { email, password };
-
-      // 2. Make the API Call
+      const payload = isRegister ? { name, email, password } : { email, password };
       const { data } = await API.post(endpoint, payload);
 
-      // 3. Handle Success
-      // Both endpoints return a token, so we can log them in immediately
       if (data.token) {
-        login(data.token, {
-          _id: data._id,
-          name: data.name,
-          email: data.email
-        });
+        login(data.token, { _id: data._id, name: data.name, email: data.email });
         navigate('/dashboard');
       }
     } catch (err: any) {
@@ -55,101 +41,177 @@ const Login = () => {
     setIsRegister(!isRegister);
     setError('');
     setName('');
-    // We keep email/password so they don't have to re-type if they clicked by mistake
+    setEmail('');
+    setPassword('');
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg border border-gray-100 animate-fade-in">
+  <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-100">
+    
+    {/* Main Container */}
+    <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isRegister ? 'Create Account' : 'Welcome Back'}
+      {/* Left Side – Modern Marketing Section */}
+      <div className="hidden lg:flex flex-col justify-between p-14 bg-linear-to-br from-blue-600 via-indigo-600 to-purple-600 text-white relative">
+
+        {/* Subtle Background Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent_60%)]"></div>
+
+        {/* Branding */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center">
+              <Brain className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-2xl font-semibold tracking-tight">JobGenie.AI</span>
+          </div>
+
+          <h1 className="text-4xl font-bold leading-tight mb-4">
+            {isRegister ? 'Build a smarter career' : 'Welcome back 👋'}
           </h1>
-          <p className="text-gray-500 text-sm">
-            {isRegister
-              ? 'Get started with your AI career assistant'
-              : 'Enter your credentials to access your dashboard'}
+
+          <p className="text-white/80 text-lg max-w-md">
+            AI-powered resume insights, ATS scoring, and job matching —
+            everything you need to move faster in your career.
           </p>
         </div>
 
-        {/* Error Banner */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded">
-            {error}
+        {/* Feature List */}
+        <div className="relative z-10 space-y-4 text-sm">
+          <div className="flex items-center gap-3">
+            <FileText className="w-5 h-5 text-white/80" />
+            Smart Resume Analysis
           </div>
-        )}
+          <div className="flex items-center gap-3">
+            <Target className="w-5 h-5 text-white/80" />
+            Personalized Job Matching
+          </div>
+          <div className="flex items-center gap-3">
+            <TrendingUp className="w-5 h-5 text-white/80" />
+            ATS & Career Score
+          </div>
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Right Side – Auth Form */}
+      <div className="flex items-center justify-center p-10 sm:p-14 bg-white">
+        <div className="w-full max-w-md">
 
-          {/* Name Field - Only show for Register */}
-          {isRegister && (
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                placeholder="John Doe"
-                required={isRegister}
-              />
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
+              <Brain className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-semibold">JobGenie.AI</span>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
+            <button
+              onClick={() => setIsRegister(false)}
+              className={`flex-1 py-2.5 rounded-lg font-medium transition ${
+                !isRegister ? 'bg-white shadow text-gray-900' : 'text-gray-500'
+              }`}
+            >
+              Log In
+            </button>
+            <button
+              onClick={() => setIsRegister(true)}
+              className={`flex-1 py-2.5 rounded-lg font-medium transition ${
+                isRegister ? 'bg-white shadow text-gray-900' : 'text-gray-500'
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {isRegister ? 'Create an account' : 'Sign in to your account'}
+            </h2>
+            <p className="text-gray-500 mt-2 text-sm">
+              {isRegister
+                ? 'Start your AI-powered career journey'
+                : 'Welcome back, continue where you left off'}
+            </p>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex gap-3">
+              <AlertCircle className="text-red-500 shrink-0" size={18} />
+              <span className="text-sm text-red-600">{error}</span>
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+            {/* Name */}
+            {isRegister && (
+              <div>
+                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 px-4 rounded-lg text-white font-semibold shadow-md transition-all 
-                            ${loading
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5'
-              }`}
-          >
-            {loading ? 'Processing...' : (isRegister ? 'Sign Up' : 'Sign In')}
-          </button>
-        </form>
+            {/* Email */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
 
-        {/* Toggle Footer */}
-        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-          <p className="text-gray-600">
-            {isRegister ? 'Already have an account?' : "Don't have an account?"}
+            {/* Password */}
+            <div>
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <div className="relative mt-2">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="••••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -tra-gray-y-1/2 text-gray-400"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit */}
             <button
-              onClick={toggleMode}
-              className="ml-2 font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-lg"
             >
-              {isRegister ? 'Login' : 'Sign Up'}
+              {loading ? 'Processing…' : isRegister ? 'Create Account' : 'Sign In'}
             </button>
-          </p>
+          </form>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Login;
