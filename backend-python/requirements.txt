@@ -3,3 +3,12 @@ uvicorn
 python-multipart
 pdfminer.six
 requests
+pypdf
+langchain
+python-dotenv
+langchain-community
+sentence-transformers
+scikit-learn
+google-generativeai
+
+numpy
