@@ -26,14 +26,14 @@ graph TD
     
     subgraph "AI Microservice (Dockerized)"
         AI -->|Extract Text| PDF[PDFMiner]
-        AI -->|Generate Embeddings| Vector[Google Gemini Embeddings]
-        AI -->|RAG Analysis| LLM[Google Gemini 1.5 Flash]
+        AI -->|Generate Embeddings| Vector[HuggingFace (all-MiniLM-L6-v2)]
+        AI -->|RAG Analysis| LLM[Google Gemini 2.5 Flash]
     end
 ```
 
 ### Key Technical Challenges Solved
-1.  **Cold Start latency**: Implemented "Lazy Loading" imports in Python to reduce startup time by 60%.
-2.  **Memory Constraints**: Replaced heavy local Hugging Face transformers (grabbing 2GB+ RAM) with **Google Gemini API** for embeddings, allowing the AI engine to run on <512MB RAM.
+1.  **Cold Start latency**: Implemented **"Lazy Loading"** imports for heavy libraries (`spacy`, `sentence_transformers`) to reduce server startup time by 60%.
+2.  **Memory Optimization**: Utilized lightweight **Quantized Models** (`all-MiniLM-L6-v2`) and efficient singleton patterns to keep RAM usage within free-tier limits, avoiding OOM kills on Render/HF Spaces.
 3.  **Cross-Origin Communication**: Configured complex CORS policies between Vercel (Frontend), Render (Gateway), and Hugging Face (AI).
 
 ---
