@@ -20,9 +20,9 @@ This project implements a **Hybrid Microservices Architecture** ("Lazy Loading P
 
 ```mermaid
 graph TD
-    Client[React Frontend (Vercel)] -->|REST API| Gateway[Node.js Gateway (Render)]
-    Gateway -->|Auth & User Data| DB[(MongoDB Atlas)]
-    Gateway -->|Analysis Request| AI[Python AI Engine (Hugging Face)]
+    Client["React Frontend (Vercel)"] -->|REST API| Gateway["Node.js Gateway (Render)"]
+    Gateway -->|Auth & User Data| DB[("MongoDB Atlas")]
+    Gateway -->|Analysis Request| AI["Python AI Engine (Hugging Face)"]
     
     subgraph "AI Microservice (Dockerized)"
         AI -->|Extract Text| PDF[PDFMiner]
@@ -69,7 +69,7 @@ graph TD
 
 1.  **Clone the Repo**
     ```bash
-    git clone https://github.com/yourusername/JobGenie-AI.git
+    git clone https://github.com/SarthakB-06/JobGenie-AI.git
     ```
 
 2.  **Setup Backend (Node)**
@@ -109,11 +109,8 @@ graph TD
 
 ## 🤝 Authors & Credits
 
-**Developer**: [Your Name]  
-**Co-Architect & AI Pair Programmer**: **GitHub Copilot (Gemini 3 Pro)**
+**Developer**: [Sarthak Bansal]  
 
-> *"This project was built with the assistance of GitHub Copilot using the Gemini 3 Pro model. Copilot served as a full-stack architect, helping with:"*
->
 > *   **System Design**: Architecting the 3-tier microservice split to optimize for free-tier hosting limits.
 >   **Debugging**: Diagnosing complex CORS and deployment timeout issues across Vercel and Render.
 >   **Refactoring**: Implementing lazy-loading in Python to prevent server timeouts.
