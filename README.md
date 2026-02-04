@@ -26,7 +26,7 @@ graph TD
     
     subgraph "AI Microservice (Dockerized)"
         AI -->|Extract Text| PDF[PDFMiner]
-        AI -->|Generate Embeddings| Vector[HuggingFace (all-MiniLM-L6-v2)]
+        AI -->|Generate Embeddings| Vector["HuggingFace (all-MiniLM-L6-v2)"]
         AI -->|RAG Analysis| LLM[Google Gemini 2.5 Flash]
     end
 ```
