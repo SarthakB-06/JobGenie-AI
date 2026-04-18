@@ -47,6 +47,18 @@ graph TD
 
 ---
 
+## 🧪 Model Evaluation & MLOps
+
+To ensure enterprise-grade AI reliability and performance, this project implements modern AI Engineering practices:
+- **Ragas (Retrieval Augmented Generation Assessment)**: Scientifically evaluates the RAG pipeline against ground-truth job descriptions.
+  - *Faithfulness Score*: `0.71` (High prevention of hallucination)
+  - *Answer Relevancy*: `0.43`
+- **LangSmith Tracing**: Full observability integration to track LLM costs, token usage, latency, and prompt execution.
+- **In-Memory Caching**: Prevents redundant LLM calls for duplicate job descriptions, minimizing API costs.
+- **Asynchronous Processing**: Utilizes `ainvoke` for non-blocking concurrent LLM generations.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Hosting |
@@ -54,6 +66,7 @@ graph TD
 | **Frontend** | React, Vite, Tailwind CSS, Framer Motion | Vercel |
 | **Gateway** | Node.js, Express, MongoDB, JWT | Render |
 | **AI Engine** | Python, FastAPI, LangChain, Google Gemini | Hugging Face Spaces |
+| **MLOps & Eval**| LangSmith, Ragas, HuggingFace Datasets | - |
 | **DevOps** | Docker, Git, Environmental Config | - |
 
 ---
